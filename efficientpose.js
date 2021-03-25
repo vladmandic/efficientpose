@@ -7,11 +7,12 @@ const canvas = require('canvas');
 
 const modelOptions = {
   // modelPath: 'file://model-tfjs-graph-ii-lite/efficientpose.json',
+  // modelPath: 'file://model-tfjs-graph-iv/efficientpose.json',
   modelPath: 'file://model-tfjs-graph-iv-f16/efficientpose.json',
   minScore: 0.2,
 };
 
-const bodyParts = ['headTop', 'upperNeck', 'rightShoulder', 'rightElbow', 'rightWrist', 'chest', 'leftShoulder', 'leftElbow', 'leftWrist', 'pelvis', 'rightHip', 'rightKnee', 'rightAnkle', 'leftHip', 'leftKnee', 'leftAnkle'];
+const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 'chest', 'leftShoulder', 'leftElbow', 'leftWrist', 'pelvis', 'rightHip', 'rightKnee', 'rightAnkle', 'leftHip', 'leftKnee', 'leftAnkle'];
 
 // save image with processed results
 async function saveImage(res, img) {
