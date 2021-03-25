@@ -1,22 +1,25 @@
 {
-  "name": "efficientpose",
+  "name": "nudenet",
   "version": "0.0.1",
-  "description": "efficientpose port to tfjs",
-  "main": "efficientpose.js",
+  "description": "nudenet port to tfjs",
+  "main": "nudenet.js",
   "scripts": {
-    "start": "node efficientpose.js inputs/body.jpg",
+    "start": "node nudenet.js graph inputs/body.jpg",
     "lint": "eslint *.js"
+  },
+  "engines": {
+    "node": ">=12.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vladmandic/efficientpose.git"
+    "url": "git+https://github.com/vladmandic/nudenet.git"
   },
   "author": "Vladimir Mandic <mandic00@live.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vladmandic/efficientpose/issues"
+    "url": "https://github.com/vladmandic/nudenet/issues"
   },
-  "homepage": "https://github.com/vladmandic/efficientpose#readme",
+  "homepage": "https://github.com/vladmandic/nudenet#readme",
   "dependencies": {
     "@tensorflow/tfjs-node": "^3.3.0",
     "@vladmandic/pilogger": "^0.2.15",
