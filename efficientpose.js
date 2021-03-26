@@ -109,7 +109,7 @@ async function processResults(res, img) {
       });
     }
   }
-  tf.dispose(stack);
+  stack.forEach((a) => tf.dispose(a));
   return parts;
 }
 
