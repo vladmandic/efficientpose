@@ -6,13 +6,36 @@ const tf = require('@tensorflow/tfjs-node');
 const canvas = require('canvas');
 
 const modelOptions = {
-  // modelPath: 'file://model-tfjs-graph-ii-lite/efficientpose.json',
+  modelPath: 'file://model-tfjs-graph-ii-lite/efficientpose.json',
   // modelPath: 'file://model-tfjs-graph-iv/efficientpose.json',
-  modelPath: 'file://model-tfjs-graph-iv-f16/efficientpose.json',
+  // modelPath: 'file://model-tfjs-graph-iv-f16/efficientpose.json',
   minScore: 0.2,
 };
 
 const bodyParts = ['head', 'neck', 'rightShoulder', 'rightElbow', 'rightWrist', 'chest', 'leftShoulder', 'leftElbow', 'leftWrist', 'pelvis', 'rightHip', 'rightKnee', 'rightAnkle', 'leftHip', 'leftKnee', 'leftAnkle'];
+
+// eslint-disable-next-line no-unused-vars
+function padImage(imgTensor) {
+  return tf.tidy(() => {
+    const [height, width] = imgTensor.shape.slice(1);
+    if (height === width) return imgTensor;
+    const axis = height > width ? 2 : 1;
+
+    const createPaddingTensor = (ammount) => {
+      const paddingTensorShape = imgTensor.shape.slice();
+      paddingTensorShape[axis] = ammount;
+      return tf.fill(paddingTensorShape, 0, 'float32');
+    };
+
+    let ammount = 0;
+    const diff = Math.abs(height - width);
+    ammount = Math.round(diff * 0.5);
+    const append = createPaddingTensor(ammount);
+    ammount = diff - ammount; // (append.shape[axis] || 0);
+    const prepend = createPaddingTensor(ammount);
+    return tf.concat([prepend, imgTensor, append], axis);
+  });
+}
 
 // save image with processed results
 async function saveImage(res, img) {
@@ -38,7 +61,25 @@ async function saveImage(res, img) {
   }
   ctx.stroke();
 
-  // todo: add lines connecting body parts
+  const connectParts = (parts, color) => {
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    for (let i = 0; i < parts.length; i++) {
+      const part = res.find((a) => a.label === parts[i]);
+      if (part) {
+        if (i === 0) ctx.moveTo(part.x, part.y);
+        else ctx.lineTo(part.x, part.y);
+      }
+    }
+    ctx.stroke();
+  };
+
+  connectParts(['head', 'neck', 'chest', 'pelvis'], '#99FFFF');
+  connectParts(['rightShoulder', 'rightElbow', 'rightWrist'], '#99CCFF');
+  connectParts(['leftShoulder', 'leftElbow', 'leftWrist'], '#99CCFF');
+  connectParts(['rightHip', 'rightKnee', 'rightAnkle'], '#9999FF');
+  connectParts(['leftHip', 'leftKnee', 'leftAnkle'], '#9999FF');
+  connectParts(['rightShoulder', 'leftShoulder', 'leftHip', 'rightHip', 'rightShoulder'], '#9900FF');
 
   // write canvas to jpeg
   const outImage = `outputs/${path.basename(img.fileName)}`;
@@ -54,11 +95,15 @@ async function loadImage(fileName, inputSize) {
   const data = fs.readFileSync(fileName);
   const obj = tf.tidy(() => {
     const buffer = tf.node.decodeImage(data);
-    const resize = tf.image.resizeBilinear(buffer, [inputSize, inputSize]);
-    const cast = resize.cast('float32');
-    const normalize = cast.div(127.5).sub(1);
-    const tensor = normalize.expandDims(0);
-    const img = { fileName, tensor, inputShape: buffer.shape, modelShape: tensor.shape, size: buffer.size };
+    const expand = buffer.expandDims(0);
+    const cast = expand.cast('float32');
+    // const pad = padImage(cast);
+    const pad = expand;
+    // @ts-ignore
+    const resize = tf.image.resizeBilinear(cast, [inputSize, inputSize]);
+    const normalize = resize.div(127.5).sub(1);
+    const tensor = normalize;
+    const img = { fileName, tensor, inputShape: buffer?.shape, paddedShape: pad?.shape, modelShape: tensor?.shape, size: buffer?.size };
     return img;
   });
   return obj;
@@ -97,15 +142,19 @@ async function processResults(res, img) {
   for (let id = 0; id < stack.length; id++) {
     // actual processing to get coordinates and score
     const [x, y, score] = max2d(stack[id]);
+    const [xRaw, yRaw] = [ // x, y normalized to 0..1
+      x / img.modelShape[2],
+      y / img.modelShape[1],
+    ];
     if (score > modelOptions.minScore) {
       parts.push({
         id,
         score,
         label: bodyParts[id],
-        xRaw: x / img.modelShape[2], // x normalized to 0..1
-        yRaw: y / img.modelShape[1], // y normalized to 0..1
-        x: Math.round(img.inputShape[1] * x / img.modelShape[2]), // x normalized to input image size
-        y: Math.round(img.inputShape[0] * y / img.modelShape[1]), // y normalized to input image size
+        xRaw,
+        yRaw,
+        x: Math.round(img.inputShape[1] * xRaw), // x normalized to input image size
+        y: Math.round(img.inputShape[0] * yRaw), // y normalized to input image size
       });
     }
   }
@@ -136,13 +185,18 @@ async function main() {
     process.exit();
   }
   const img = await loadImage(imageFile, inputSize);
-  log.info('Loaded image:', img.fileName, 'inputShape:', img.inputShape, 'modelShape:', img.modelShape, 'decoded size:', img.size);
+  log.info('Loaded image:', img.fileName, 'inputShape:', img.inputShape, 'paddedShape', img.paddedShape, 'modelShape:', img.modelShape, 'decoded size:', img.size);
 
   // run actual prediction
-  const res = model.predict(img.tensor);
+  const t0 = process.hrtime.bigint();
+  const res = await model.executeAsync(img.tensor);
+  const t1 = process.hrtime.bigint();
+  log.info('Inference time:', Math.round(parseInt((t1 - t0).toString()) / 1000 / 1000), 'ms');
 
   // process results
   const results = await processResults(res, img);
+  const t2 = process.hrtime.bigint();
+  log.info('Processing time:', Math.round(parseInt((t2 - t1).toString()) / 1000 / 1000), 'ms');
 
   // print results
   log.data('Results:', results);
