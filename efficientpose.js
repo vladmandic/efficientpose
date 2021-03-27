@@ -6,9 +6,9 @@ const tf = require('@tensorflow/tfjs-node');
 const canvas = require('canvas');
 
 const modelOptions = {
-  modelPath: 'file://model-tfjs-graph-ii-lite/efficientpose.json',
-  // modelPath: 'file://model-tfjs-graph-iv/efficientpose.json',
-  // modelPath: 'file://model-tfjs-graph-iv-f16/efficientpose.json',
+  // modelPath: 'file://model-tfjs-graph-i-lite/efficientpose.json',
+  // modelPath: 'file://model-tfjs-graph-ii-lite/efficientpose.json',
+  modelPath: 'file://model-tfjs-graph-iv/efficientpose.json',
   minScore: 0.2,
 };
 
