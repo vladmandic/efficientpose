@@ -587,7 +587,7 @@
           {"name":"block1b_se_reduce_res2/bias","op":"Const","attr":{"dtype":{"type":"DT_FLOAT"},"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"6"}]}}}}},
           {"name":"block1b_se_expand_res2/kernel","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"1"},{"size":"1"},{"size":"6"},{"size":"24"}]}}},"dtype":{"type":"DT_FLOAT"}}},
           {"name":"block1b_se_expand_res2/bias","op":"Const","attr":{"dtype":{"type":"DT_FLOAT"},"value":{"tensor":{"dtype":"DT_FLOAT","tensorShape":{"dim":[{"size":"24"}]}}}}},
-          {"name":"input_res1","op":"Placeholder","attr":{"dtype":{"type":"DT_FLOAT"},"shape":{"shape":{"dim":[{"size":"-1"},{"size":"600"},{"size":"600"},{"size":"3"}]}}}},
+          {"name":"input_res1","op":"Placeholder","attr":{"dtype":{"type":"DT_FLOAT"},"shape":{"shape":{"dim":[{"size":"1"},{"size":"600"},{"size":"600"},{"size":"3"}]}}}},
           {"name":"block1a_se_squeeze_res2/Mean/reduction_indices","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{"dim":[{"size":"2"}]}}},"dtype":{"type":"DT_INT32"}}},
           {"name":"block1a_se_reshape_res2/strided_slice/stack","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{"dim":[{"size":"1"}]}}},"dtype":{"type":"DT_INT32"}}},
           {"name":"block1a_se_reshape_res2/strided_slice/stack_1","op":"Const","attr":{"dtype":{"type":"DT_INT32"},"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{"dim":[{"size":"1"}]}}}}},
