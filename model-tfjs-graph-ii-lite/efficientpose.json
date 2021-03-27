@@ -66,7 +66,7 @@
           {"name":"concatenate_1/concat/axis","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{}}},"dtype":{"type":"DT_INT32"}}},
           {"name":"pass2_block1_mbconv2_detection1_dense/concat/axis","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{}}},"dtype":{"type":"DT_INT32"}}},
           {"name":"pass2_block1_mbconv3_detection1_dense/concat/axis","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{}}},"dtype":{"type":"DT_INT32"}}},
-          {"name":"input_1_0","op":"Placeholder","attr":{"dtype":{"type":"DT_FLOAT"},"shape":{"shape":{"dim":[{"size":"-1"},{"size":"-1"},{"size":"-1"},{"size":"3"}]}}}},
+          {"name":"input_1_0","op":"Placeholder","attr":{"dtype":{"type":"DT_FLOAT"},"shape":{"shape":{"dim":[{"size":"-1"},{"size":"368"},{"size":"368"},{"size":"3"}]}}}},
           {"name":"concatenate_2/concat/axis","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{}}},"dtype":{"type":"DT_INT32"}}},
           {"name":"pass3_block1_mbconv2_detection2_dense/concat/axis","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{}}},"dtype":{"type":"DT_INT32"}}},
           {"name":"pass3_block1_mbconv3_detection2_dense/concat/axis","op":"Const","attr":{"value":{"tensor":{"dtype":"DT_INT32","tensorShape":{}}},"dtype":{"type":"DT_INT32"}}},
