@@ -99,7 +99,7 @@ After conversion, lets add correct model signature in `model.json`
 
 ```json
   "signature": {
-      "inputs": { "input_1_0": { "name": "input_1_0", "dtype": "DT_FLOAT", "tensorShape":{"dim":[{"size":"1"},{"size":"-1"},{"size":"-1"},{"size":"3"}]} } },
+      "inputs": { "input_1_0": { "name": "input_1_0", "dtype": "DT_FLOAT", "tensorShape":{"dim":[{"size":"1"},{"size":"368"},{"size":"368"},{"size":"3"}]} } },
       "outputs": { "upscaled_confs/BiasAdd:0": { "name": "upscaled_confs/BiasAdd:0", "dtype": "DT_FLOAT", "tensorShape":{"dim":[{"size":"1"},{"size":"-1"},{"size":"-1"},{"size":"16"}]} } }
   },
 ```
