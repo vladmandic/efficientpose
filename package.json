@@ -1,7 +1,7 @@
 {
   "name": "efficientpose",
   "version": "0.0.1",
-  "description": "efficientpose port to tfjs",
+  "description": "EfficientPose: Body Segmentation for TFJS and NodeJS",
   "main": "efficientpose.js",
   "scripts": {
     "start": "node efficientpose.js inputs/body.jpg",
