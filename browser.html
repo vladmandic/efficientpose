@@ -1,0 +1,54 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <script type="module">
+      import * as tf from 'https://cdnjs.cloudflare.com/ajax/libs/tensorflow/3.3.0/tf.fesm.min.js';
+
+      const modelPath = 'efficientpose.json';
+      const imageFile = 'image.jpg';
+      const inputSize = 368;
+
+      // load image from file and prepares image tensor that fits the model
+      async function loadImage(imageURL) {
+        return new Promise((resolve) => {
+          const img = new Image(inputSize, inputSize);
+          img.onload = () => {
+            const res = tf.tidy(() => {
+              const buffer = tf.browser.fromPixels(img);
+              const resize = tf.image.resizeBilinear(buffer, [inputSize, inputSize]);
+              const cast = resize.cast('float32');
+              const normalize = cast.div(127.5).sub(1);
+              const expand = normalize.expandDims(0);
+              const tensor = expand;
+              return tensor;
+            });
+            resolve(res);
+          };
+          img.src = encodeURI(imageURL);
+        });
+      }
+
+      async function main() {
+        // init tensorflow
+        await tf.setBackend('webgl');
+        await tf.enableProdMode();
+        await tf.ready();
+
+        // load model
+        const model = await tf.loadGraphModel(modelPath);
+        const img = await loadImage(imageFile);
+
+        for (let i = 0; i < 10; i++) {
+          // run actual prediction
+          const t0 = performance.now();
+          model.predict(img);
+          const t1 = performance.now();
+          console.log('browser inference run:', i, 'time:', Math.round(parseInt((t1 - t0).toString())), 'ms');
+        }
+      }
+
+      window.onload = main;
+     </script>
+  </body>
+</html>
