@@ -3,10 +3,29 @@
 Models included in `/model-tfjs-graph-*` were converted to TFJS Graph model format from the original repository  
 Models descriptors have been additionally parsed for readability
 
+
+<br>
+
+## Implementation
+
 Actual model parsing implementation in `efficientpose.js` does not follow original  
 and is implemented using native TFJS ops and optimized for JavaScript execution
 
+Function `processResults()` takes `model.execute` output and returns array of 16 keypoints:
+
+- id
+- score: score as number
+- label: annotated body part as string
+- xRaw: x coordinate normalized to 0..1
+- yRaw: y coordinate normalized to 0..1
+- x: x coordinate normalized to input image size
+- y: y coordinate normalized to input image size
+
 <br><hr><br>
+
+## Example
+
+![Example Image](outputs/model2.jpg)
 
 ## Test
 
