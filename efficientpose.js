@@ -8,7 +8,7 @@ const canvas = require('canvas');
 const modelOptions = {
   // modelPath: 'file://model-tfjs-graph-i-lite/efficientpose.json',
   // modelPath: 'file://model-tfjs-graph-ii-lite/efficientpose.json',
-  modelPath: 'file://model-tfjs-graph-iv/efficientpose.json',
+  modelPath: 'file://models/efficientpose-iv.json',
   minScore: 0.2,
 };
 
@@ -179,9 +179,9 @@ async function main() {
 
   // load image and get approprite tensor for it
   const inputSize = Object.values(model.modelSignature['inputs'])[0].tensorShape.dim[2].size;
-  const imageFile = process.argv.length > 2 ? process.argv[2] : null;
+  const imageFile = process.argv.length > 3 ? process.argv[3] : null;
   if (!imageFile || !fs.existsSync(imageFile)) {
-    log.error('Specify a valid image file');
+    log.error('Specify a valid image file', process.argv);
     process.exit();
   }
   const img = await loadImage(imageFile, inputSize);
